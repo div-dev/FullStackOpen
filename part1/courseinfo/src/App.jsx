@@ -7,13 +7,21 @@ const Header = (props) =>{
   )
 }
 
+const Part = (props)=>{
+  return(
+    <div>
+      <p>{props.props.name} {props.props.exercises}</p>
+    </div>
+  )
+}
+
 const Content = (props) =>{
   console.log(props)
   return(
     <div>
-      <p>{props.parts[0].name} {props.parts[0].exercises}</p>
-      <p>{props.parts[1].name} {props.parts[1].exercises}</p>
-      <p>{props.parts[2].name} {props.parts[2].exercises}</p>
+      <Part props={props.parts[0]}/>
+      <Part props={props.parts[1]} />
+      <Part props={props.parts[2]} />
     </div>
   )
 }
