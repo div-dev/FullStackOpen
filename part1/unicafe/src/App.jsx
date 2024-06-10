@@ -5,9 +5,10 @@ import { useState } from 'react'
 const StatisticsLine = ({value , text}) =>{
   if (value !== 0 ){
   return (
-    <div>
-      {text} = {value}
-    </div>
+    <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+    </tr>
   )
 }
 }
