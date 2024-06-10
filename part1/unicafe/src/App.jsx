@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
-const Display = ({value , text}) =>{
+
+
+const StatisticsLine = ({value , text}) =>{
   if (value !== 0 ){
   return (
     <div>
@@ -15,13 +17,15 @@ const Stats = ({good, bad, neutral}) =>{
   const total = good + bad +neutral
   const average = total !== 0 ? (good - bad)/total : 0
   const positive = total !== 0 ? (good/total)*100 : 0 
-  console.log(total)
   if(good !==0 || bad !==0 || neutral!==0){
   return(
     <div>
-      <div>Total = {total} </div>
-      <div>average = {average} </div>
-      <div>positive = {positive} </div>
+      <StatisticsLine text="good" value={good}/>
+      <StatisticsLine text="neutral" value={neutral}/>
+      <StatisticsLine text="bad" value={bad}/>
+      <StatisticsLine text="all" value={total}/>
+      <StatisticsLine text="average" value={average}/>
+      <StatisticsLine text="positive" value={positive}/>
     </div>
   )
 }else return <div>No FeedBack given</div>
@@ -49,15 +53,8 @@ const App = () => {
       <Button handleClick={()=> setGood(good+1)} text='good'/>
       <Button handleClick={()=> setNeutral(neutral+1)} text='neutral'/>
       <Button handleClick={()=> setBad(bad+1)} text='bad'/>
-      
-      
       <h1>Statistics</h1>
-      <Display text='good' value={good}/>
-      <Display text='nuetral' value={neutral}/>
-      <Display text='bad' value={bad}/>
       <Stats good={good} bad={bad} neutral={neutral}/>
-
-      
     </div>
   )
 }
