@@ -8,6 +8,21 @@ const Display = (props) =>{
   )
 }
 
+const Stats = ({good, bad, neutral}) =>{
+
+  const total = good + bad +neutral
+  const average = total !== 0 ? (good - bad)/total : 0
+  const positive = total !== 0 ? (good/total)*100 : 0 
+  console.log(total)
+  return(
+    <div>
+      <div>Total {total} </div>
+      <div>average {average} </div>
+      <div>positive {positive} </div>
+    </div>
+  )
+} 
+
 
 
 const Button = (props) =>{
@@ -36,6 +51,7 @@ const App = () => {
       <Display text='good' value={good}/>
       <Display text='nuetral' value={neutral}/>
       <Display text='bad' value={bad}/>
+      <Stats good={good} bad={bad} neutral={neutral}/>
 
       
     </div>
