@@ -4,9 +4,7 @@ import { useState } from 'react'
 
 const Button = ({onClick , text}) =>{
   return(
-    <div>
       <button onClick={onClick}>{text}</button>
-    </div>
   )
 }
 
@@ -23,16 +21,26 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes , setVotes] = useState(Array(anecdotes.length).fill(0))
 
   const randomAnecdotes = () =>{
     let random = Math.floor(Math.random() * anecdotes.length)
     setSelected(random)
   }
 
+  const storeVotes = () =>{
+    let numVotes = [...votes]
+    numVotes[selected] += 1
+    setVotes(numVotes)
+  }
+
   return (
     <div>
-      {anecdotes[selected]}
-      <Button  onClick={randomAnecdotes} text="next anecdotes"/>
+      {anecdotes[selected]} has {votes[selected]} votes
+      <div>
+        <Button onClick={storeVotes} text="vote" />
+        <Button  onClick={randomAnecdotes} text="next anecdotes"/>
+      </div>
     </div>
   )
 }
