@@ -1,11 +1,13 @@
 import { useState } from 'react'
 
-const Display = (props) =>{
+const Display = ({value , text}) =>{
+  if (value !== 0 ){
   return (
     <div>
-      {props.text} ={'>'} {props.value}
+      {text} = {value}
     </div>
   )
+}
 }
 
 const Stats = ({good, bad, neutral}) =>{
@@ -14,13 +16,15 @@ const Stats = ({good, bad, neutral}) =>{
   const average = total !== 0 ? (good - bad)/total : 0
   const positive = total !== 0 ? (good/total)*100 : 0 
   console.log(total)
+  if(good !==0 || bad !==0 || neutral!==0){
   return(
     <div>
-      <div>Total {total} </div>
-      <div>average {average} </div>
-      <div>positive {positive} </div>
+      <div>Total = {total} </div>
+      <div>average = {average} </div>
+      <div>positive = {positive} </div>
     </div>
   )
+}else return <div>No FeedBack given</div>
 } 
 
 
