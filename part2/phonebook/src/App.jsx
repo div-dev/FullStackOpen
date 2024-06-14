@@ -12,16 +12,16 @@ const App = () => {
   const [userMessage, setUserMessage] = useState(null)
 
 
-  const hook = () =>{
-    console.log('effect')
-    
-      getPersons().then(response =>{
-        setPersons(response.data)
-      }).catch(error=>{
-        console.log(`Getting data ERR: ${error}`)
-  })
-
-  useEffect(hook,[userMessage])
+  useEffect(() => {
+    console.log('effect');
+    getPersons()
+      .then(response => {
+        setPersons(response.data);
+      })
+      .catch(error => {
+        console.log(`Getting data ERR: ${error}`);
+      });
+  }, [userMessage]);
 
   const timer = () =>{
     setTimeout(()=>{
@@ -33,20 +33,21 @@ const App = () => {
     event.preventDefault()
     console.log('added value' , event.target)    
     if(newName.length>0 && newNum.length>0){
-      let existingPerson = person.find(person => person.name === newName)
+      let existingPerson = persons.find(person => person.name === newName)
       if(existingPerson){
         if(existingPerson.number !== newNum){
           if(wwindow.confirm(`${existingPerson.name} is already in the database, replace the old no. with a new one??`)){
-            updatePerson(existingPerson.id, updatePerson).then(response=>{
-              setPersons(prevPersons => prevPersons.map(person => person.id !== existingPerson.id ? person : response.data))
-              setUserMessage(`${newName} has been succesfully updated with ne number ${newNum}`)
-              timer()
-
-            setNewName('')
-            setNewNum('')
-            }).catch(error => {
-              console.log('updating error: ${error}')
-            })
+            updatePerson(existingPerson.id, { name: newName, number: newNum })
+              .then(response => {
+                setPersons(prevPersons => prevPersons.map(person => person.id !== existingPerson.id ? person : response.data));
+                setUserMessage(`${newName} has been successfully updated with new number ${newNum}`);
+                timer();
+                setNewName('');
+                setNewNum('');
+              })
+              .catch(error => {
+                console.log(`Updating error: ${error}`);
+              })
           
           }else{
             alert(`${newName} with the same no. has alredy stored int the database`)
@@ -76,13 +77,13 @@ const App = () => {
     if (window.confirm(`Do you really want to delete ${person.name}?`)) {
       deletePerson(person.id)
           .then(() => {
-              setPersons(persons.filter(p => p.id !== person.id));
+              setPersons(persons.filter(p => p.id !== person.id))
           })
           .catch(error => {
-              console.error(`Error deleting person with id ${person.id}:`, error);
+              console.error(`Error deleting person with id ${person.id}:`, error)
               setUserMessage(`Entry has been already removed from phonebook`)
-              activateTimer();
-              setPersons(persons.filter(p => p.id !== person.id));
+              timer()
+              setPersons(persons.filter(p => p.id !== person.id))
           });
     }
   }
@@ -116,5 +117,5 @@ const App = () => {
     </div>
   )
 }
-}
+
 export default App
