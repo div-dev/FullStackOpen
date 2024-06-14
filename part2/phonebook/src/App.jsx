@@ -1,40 +1,90 @@
-import { useState } from 'react'
+import { useState , useEffect } from 'react'
 import { Persons } from './components/Persons'
 import { Filter } from './components/Filter'
 import { PersonForm } from './components/PersonForm'
+import { createEntry, updatePerson , deletePerson, getPersons } from './service/apiCalls'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [filter, setFilter] = useState('')
+  const [userMessage, setUserMessage] = useState(null)
+
+
+  const hook = () =>{
+    console.log('effect')
+    
+      getPersons().then(response =>{
+        setPersons(response.data)
+      }).catch(error=>{
+        console.log(`Getting data ERR: ${error}`)
+  })
+
+  useEffect(hook,[userMessage])
+
+  const timer = () =>{
+    setTimeout(()=>{
+      setUserMessage(null)
+    },5000)
+  }
 
   const addName = (event) =>{
     event.preventDefault()
-    console.log('added value' , event.target)
-    const nameObject = {
-      name: newName,
-      number: newNum,
+    console.log('added value' , event.target)    
+    if(newName.length>0 && newNum.length>0){
+      let existingPerson = person.find(person => person.name === newName)
+      if(existingPerson){
+        if(existingPerson.number !== newNum){
+          if(wwindow.confirm(`${existingPerson.name} is already in the database, replace the old no. with a new one??`)){
+            updatePerson(existingPerson.id, updatePerson).then(response=>{
+              setPersons(prevPersons => prevPersons.map(person => person.id !== existingPerson.id ? person : response.data))
+              setUserMessage(`${newName} has been succesfully updated with ne number ${newNum}`)
+              timer()
+
+            setNewName('')
+            setNewNum('')
+            }).catch(error => {
+              console.log('updating error: ${error}')
+            })
+          
+          }else{
+            alert(`${newName} with the same no. has alredy stored int the database`)
+          }
+        }else{
+          const newPersonObj = {
+            name:newName,
+            number: newNum,
+          }
+          createEntry(newPersonObj).then(response =>{
+            setPersons(persons.concat(response.data))
+            setNewName('')
+            setNewNum('')
+            setUserMessage(`added ${newName}`)
+            timer()
+          }).catch(error=>{
+            alert(`${error}`)
+          })
+        }
+      }
+    }else{
+      alert(`Name or number can not be empty`)
     }
-    const filterPerson = persons.filter(person =>(person.name === newName))
-    const filterNumber = persons.filter(person =>(person.number === newNum))
-    
-    if(filterPerson.length>0){
-      alert(` ${newName} already exists`)
-    }else if(filterNumber.length>0){
-      alert(` ${newNum} already exists`)
+}
+
+  const deletePersonHandler = (person) =>{
+    if (window.confirm(`Do you really want to delete ${person.name}?`)) {
+      deletePerson(person.id)
+          .then(() => {
+              setPersons(persons.filter(p => p.id !== person.id));
+          })
+          .catch(error => {
+              console.error(`Error deleting person with id ${person.id}:`, error);
+              setUserMessage(`Entry has been already removed from phonebook`)
+              activateTimer();
+              setPersons(persons.filter(p => p.id !== person.id));
+          });
     }
-    else{
-      setPersons(persons.concat(nameObject))
-      setNewName('')
-      setNewNum('')
-    }
-    
   }
   
   const handleNumChange = (event) =>{
@@ -46,7 +96,6 @@ const App = () => {
   }
 
   const handleOnChange = (event) =>{
-    console.log(event.target.value)
     setFilter(event.target.value)
   }
 
@@ -63,9 +112,9 @@ const App = () => {
           handleNumChange={handleNumChange} 
       />
       <h2>Numbers</h2>
-            <Persons persons={persons} filter={filter}/>
+            <Persons persons={persons} filter={filter} deletePerson={deletePersonHandler}/>
     </div>
   )
 }
-
+}
 export default App
