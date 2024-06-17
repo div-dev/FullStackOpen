@@ -4,6 +4,8 @@ import { Filter } from './components/Filter'
 import { PersonForm } from './components/PersonForm'
 import { createEntry, updatePerson , deletePerson, getPersons } from './service/apiCalls'
 
+import './index.css'
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
@@ -104,7 +106,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter filter={filter} handleOnChange={handleOnChange}/>
-      <h2>add a new</h2>
+      <h2 className='note'>add a new</h2>
       <PersonForm 
           numNum={newNum} 
           newName={newName} 
